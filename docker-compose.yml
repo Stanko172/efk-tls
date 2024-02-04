@@ -214,16 +214,27 @@ services:
       timeout: 10s
       retries: 120
 
-  logstash:
-    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - certs:/usr/share/logstash/config/certs
-    command: logstash -f /usr/share/logstash/pipeline/logstash.conf
+  # logstash:
+  #   image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+  #   volumes:
+  #     - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #     - certs:/usr/share/logstash/config/certs
+  #   command: logstash -f /usr/share/logstash/pipeline/logstash.conf
+  #   ports:
+  #     - "5000:5000"
+  #   environment:
+  #     LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  fluent-bit:
+    image: fluent/fluent-bit:latest
+    links:
+      - es01
     ports:
-      - "5000:5000"
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      - "24224:24224"
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    depends_on:
+      - es01
 
 volumes:
   certs:
