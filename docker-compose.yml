@@ -232,6 +232,7 @@ services:
     ports:
       - "24224:24224"
     volumes:
+      - certs:/usr/share/fluentbit/config/certs
       - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
     depends_on:
       - es01
